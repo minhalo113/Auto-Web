@@ -8,8 +8,8 @@ def write_video_ids_to_file(video_id, filename = 'already_use_video.txt'):
         f.write(video_id + "\n")
 
 def test_to_file(video_id, filename = 'test.txt'):
-    with open(filename, 'w') as f:
-        f.write(video_id + "\n")
+    with open(filename, 'a') as f:
+        f.write(video_id + "\n\n\n")
 
 def revise_script(text):
     # use model to revise script
