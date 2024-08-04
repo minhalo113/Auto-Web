@@ -18,6 +18,7 @@ def revise_script(text):
 
     refined_text =[]
     title = []
+    revised_text = []
 
     client = InferenceClient(
         "HuggingFaceH4/zephyr-7b-beta",
@@ -42,7 +43,17 @@ def revise_script(text):
         title.append(message.choices[0].delta.content)
     title = "".join(title)
 
-    return  [refined_text, title]
+    for message in client.chat_completion(
+        messages=[{"role": "user", "content": 
+                   "Revise this text but keep it content:" + text}],
+        max_tokens=2048,
+        stream=True,
+        temperature=0.6
+    ):  
+        revised_text.append(message.choices[0].delta.content)
+    revised_text = "".join(revised_text)
+
+    return  [refined_text, title, revised_text]
 
 def get_transcript():
     video = return_videos_list()
@@ -60,7 +71,8 @@ def get_transcript():
         print("Error :", e)
 
     # revise script
-    [finalize_script, title] = revise_script(script)
+    [finalize_script, title, revised_text] = revise_script(script)
+    test_to_file(revised_text, "script_for_vid.txt")
     return [script, finalize_script, title]
 
 if __name__ == "__main__":
